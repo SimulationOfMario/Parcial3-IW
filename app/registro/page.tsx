@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { register } from "@/actions/register";
+import './registro.css';
 
 export default function Register() {
   const [error, setError] = useState<string>();
@@ -21,7 +22,17 @@ export default function Register() {
       setError(r.error);
       return;
     } else {
-      return router.push("/login");
+      // Autologin después del registro
+      const res = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: false,
+      });
+      if (res?.ok) {
+        router.push("/");
+      } else {
+        setError("Error al iniciar sesión automáticamente");
+      }
     }
   };
 
@@ -36,53 +47,48 @@ export default function Register() {
   };
 
   return (
-    <section className="w-full h-screen flex items-center justify-center">
+    <section className="form-container">
       <form
         ref={ref}
-        action={handleSubmit}
-        className="p-6 w-full max-w-[400px] flex flex-col justify-between items-center gap-2 
-            border border-solid border-black bg-white rounded"
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          handleSubmit(formData);
+        }}
+        className="form"
       >
-        {error && <div className="">{error}</div>}
-        <h1 className="mb-5 w-full text-2xl font-bold">Register</h1>
+        {error && <div className="error">{error}</div>}
+        <h1 className="form-title">Register</h1>
 
-        <label className="w-full text-sm">Full Name</label>
+        <label className="form-label">Full Name</label>
         <input
           type="text"
           placeholder="Full Name"
-          className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded text-[13px]"
+          className="form-input"
           name="name"
         />
 
-        <label className="w-full text-sm">Email</label>
+        <label className="form-label">Email</label>
         <input
           type="email"
           placeholder="Email"
-          className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded"
+          className="form-input"
           name="email"
         />
 
-        <label className="w-full text-sm">Password</label>
-        <div className="flex w-full">
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded"
-            name="password"
-          />
-        </div>
+        <label className="form-label">Password</label>
+        <input
+          type="password"
+          placeholder="Password"
+          className="form-input"
+          name="password"
+        />
 
-        <button
-          className="w-full border border-solid border-black py-1.5 mt-2.5 rounded
-            transition duration-150 ease hover:bg-black"
-        >
-          Sign up
-        </button>
+        <button className="form-button">Sign up</button>
 
         <button
           type="button"
-          className="w-full border border-solid border-black py-1.5 mt-2.5 rounded
-            transition duration-150 ease hover:bg-black"
+          className="form-button"
           onClick={handleGoogleSignIn}
         >
           Sign up with Google
@@ -90,7 +96,7 @@ export default function Register() {
 
         <Link
           href="/login"
-          className="text-sm text-[#888] transition duration-150 ease hover:text-black"
+          className="form-link"
         >
           Already have an account?
         </Link>

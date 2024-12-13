@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");
+    const email = searchParams.get("email");
 
     await connectDB();
 
@@ -23,7 +24,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(eventos);
     }
 
-    // Si no hay coordenadas, devuelve todos los eventos
+    if (email) {
+      const eventos = await Evento.find({ organizador: email }).sort({ timestamp: 1 });
+      return NextResponse.json(eventos);
+    }
+
+    // Si no hay coordenadas ni email, devuelve todos los eventos
     const eventos = await Evento.find({}).sort({ timestamp: 1 });
     return NextResponse.json(eventos);
   } catch (error) {

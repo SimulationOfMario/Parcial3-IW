@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSession } from 'next-auth/react';
+import './crear.css';
 
 const CrearEvento = () => {
   const [nombre, setNombre] = useState('');
@@ -56,25 +57,60 @@ const CrearEvento = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Nombre:</label>
-        <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-      </div>
-      <div>
-        <label>Fecha y hora:</label>
-        <input type="datetime-local" value={timestamp} onChange={(e) => setTimestamp(e.target.value)} required />
-      </div>
-      <div>
-        <label>Lugar:</label>
-        <input type="text" value={lugar} onChange={(e) => setLugar(e.target.value)} required />
-      </div>
-      <div>
-        <label>Imagen:</label>
-        <input type="file" onChange={(e) => setImagen(e.target.files?.[0] || null)} required />
-      </div>
-      <button type="submit" disabled={isSubmitting}>Crear Evento</button>
-    </form>
+    <div className="crear-evento">
+      <h1 className="form-title">Crear Nuevo Viaje</h1>
+      <form onSubmit={handleSubmit} className="crear-form">
+        <div className="form-group">
+          <label className="form-label">Nombre del Viaje:</label>
+          <input 
+            type="text" 
+            value={nombre} 
+            onChange={(e) => setNombre(e.target.value)} 
+            required 
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Fecha del Viaje:</label>
+          <input 
+            type="datetime-local" 
+            value={timestamp} 
+            onChange={(e) => setTimestamp(e.target.value)} 
+            required 
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Lugar Visitado:</label>
+          <input 
+            type="text" 
+            value={lugar} 
+            onChange={(e) => setLugar(e.target.value)} 
+            required 
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Imagen:</label>
+          <input 
+            type="file" 
+            onChange={(e) => setImagen(e.target.files?.[0] || null)} 
+            required 
+            className="form-input"
+          />
+        </div>
+        <button 
+          type="submit" 
+          disabled={isSubmitting} 
+          className="submit-button"
+        >
+          {isSubmitting ? 'Creando...' : 'Crear'}
+        </button>
+      </form>
+      <button onClick={() => router.push('/')} className="volver-button">
+        Volver a la página principal
+      </button>
+    </div>
   );
 };
 

@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { use } from 'react';
+import dynamic from "next/dynamic";
+import './evento.css';
+
+const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 interface Evento {
   _id: string;
